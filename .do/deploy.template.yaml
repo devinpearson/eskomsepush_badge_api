@@ -1,0 +1,7 @@
+spec:
+ name: eskomsepush_badge_api
+ services:
+ - name: web
+   git:
+     branch: main
+     repo_clone_url: https://github.com/devinpearson/eskomsepush_badge_api
