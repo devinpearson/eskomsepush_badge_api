@@ -154,28 +154,28 @@ void loop() {
         digitalWrite(STAGE7, LOW);
         digitalWrite(STAGE8, LOW);
 
-        if (stage1 = '1') {
+        if (stage1 == '1') {
           digitalWrite(STAGE1, HIGH);          
         }
-        if (stage2 = '1') {
+        if (stage2 == '1') {
           digitalWrite(STAGE2, HIGH);          
         }
-        if (stage3 = '1') {
+        if (stage3 == '1') {
           digitalWrite(STAGE3, HIGH);          
         }
-        if (stage4 = '1') {
+        if (stage4 == '1') {
           digitalWrite(STAGE4, HIGH);          
         }
-        if (stage5 = '1') {
+        if (stage5 == '1') {
           digitalWrite(STAGE5, HIGH);          
         }
-        if (stage6 = '1') {
+        if (stage6 == '1') {
           digitalWrite(STAGE6, HIGH);          
         }
-        if (stage7 = '1') {
+        if (stage7 == '1') {
           digitalWrite(STAGE7, HIGH);          
         }
-        if (stage8 = '1') {
+        if (stage8 == '1') {
           digitalWrite(STAGE8, HIGH);          
         }
 
@@ -191,37 +191,37 @@ void loop() {
         digitalWrite(LED10, LOW);
         digitalWrite(LED11, LOW);
 
-        if (led1 = '1') {
+        if (led1 == '1') {
           digitalWrite(LED1, HIGH);          
         }
-        if (led2 = '1') {
+        if (led2 == '1') {
           digitalWrite(LED2, HIGH);          
         }
-        if (led3 = '1') {
+        if (led3 == '1') {
           digitalWrite(LED3, HIGH);          
         }
-        if (led4 = '1') {
+        if (led4 == '1') {
           digitalWrite(LED4, HIGH);          
         }
-        if (led5 = '1') {
+        if (led5 == '1') {
           digitalWrite(LED5, HIGH);          
         }
-        if (led6 = '1') {
+        if (led6 == '1') {
           digitalWrite(LED6, HIGH);          
         }
-        if (led7 = '1') {
+        if (led7 == '1') {
           digitalWrite(LED7, HIGH);          
         }
-        if (led8 = '1') {
+        if (led8 == '1') {
           digitalWrite(LED8, HIGH);          
         }
-        if (led9 = '1') {
+        if (led9 == '1') {
           digitalWrite(LED9, HIGH);          
         }
-        if (led10 = '1') {
+        if (led10 == '1') {
           digitalWrite(LED10, HIGH);          
         }
-        if (led11 = '1') {
+        if (led11 == '1') {
           digitalWrite(LED11, HIGH);          
         }
         
