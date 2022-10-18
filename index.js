@@ -1,9 +1,11 @@
+require('dotenv').config()
 const express = require('express')
 const axios = require('axios')
 const app = express()
 const port = process.env.PORT || 3000
-const apikey = ''
-const area = 'jhbcitypower2-11-radiokop'
+const apikey = process.env.APIKEY || ''
+const area = process.env.AREA || 'jhbcitypower2-11-radiokop'
+
 app.get('/', (req, res) => {
 	//const stage = parseInt(getStage())
   const stage = 2
@@ -12,38 +14,42 @@ app.get('/', (req, res) => {
 })
 
 app.get('/v2', (req, res) => {
-	//const stage = parseInt(getStage())
-  const stage = 2
+  let ledArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+	// const stage = parseInt(getStage())
+  const stage = 4
+  if ((stage - 1) >= 0) {
+    ledArray[stage -1] = 1
+  }
   const schedule = getSchedule(area, stage)
-  res.send('1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1')
+  if (schedule - 1 >= 0) {
+    for (let i = 8; i < schedule + 8; i++) {
+      ledArray[i] = 1
+    }
+}
+  res.send(ledArray.join(','))
 })
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-function getStage() {
-  const response ='{"status":{"capetown":{"name":"Cape Town","next_stages":[],"stage":"0","stage_updated":"2022-10-17T00:00:54.460244+02:00"},"eskom":{"name":"South Africa","next_stages":[{"stage":"2","stage_start_timestamp":"2022-10-17T16:00:00+02:00"},{"stage":"0","stage_start_timestamp":"2022-10-18T00:00:00+02:00"},{"stage":"2","stage_start_timestamp":"2022-10-18T16:00:00+02:00"},{"stage":"0","stage_start_timestamp":"2022-10-19T00:00:00+02:00"},{"stage":"2","stage_start_timestamp":"2022-10-19T16:00:00+02:00"},{"stage":"0","stage_start_timestamp":"2022-10-20T00:00:00+02:00"}],"stage":"0","stage_updated":"2022-10-17T00:00:54.460244+02:00"}}}'
-  let result = JSON.parse(response);
-  // console.log(result)
-	return result['status']['eskom']['stage']
-//  var config = {
-//   method: 'get',
-//   url: 'https://developer.sepush.co.za/business/2.0/status',
-//   headers: { 
-//     'token': apikey
-//   }
-//     };
+async function getStage() {
+  // const response ='{"status":{"capetown":{"name":"Cape Town","next_stages":[],"stage":"0","stage_updated":"2022-10-17T00:00:54.460244+02:00"},"eskom":{"name":"South Africa","next_stages":[{"stage":"2","stage_start_timestamp":"2022-10-17T16:00:00+02:00"},{"stage":"0","stage_start_timestamp":"2022-10-18T00:00:00+02:00"},{"stage":"2","stage_start_timestamp":"2022-10-18T16:00:00+02:00"},{"stage":"4","stage_start_timestamp":"2022-10-19T00:00:00+02:00"},{"stage":"2","stage_start_timestamp":"2022-10-19T16:00:00+02:00"},{"stage":"0","stage_start_timestamp":"2022-10-20T00:00:00+02:00"}],"stage":"0","stage_updated":"2022-10-17T00:00:54.460244+02:00"}}}'
+  // let result = JSON.parse(response);
+  //console.log(result['status']['eskom']['stage'])
+	//return result['status']['eskom']['stage']
+ var config = {
+  method: 'get',
+  url: 'https://developer.sepush.co.za/business/2.0/status',
+  headers: { 
+    'token': apikey
+  }
+    };
 
-// axios(config)
-// .then(function (response) {
-//   let result = JSON.parse(response.data);
-//   console.log(result)
-// 	console.log(result["status"].eskom.stage)
-// })
-// .catch(function (error) {
-//   console.log(error);
-// });
+axios(config)
+.then(function (response) {
+  return response.data['status']['eskom']['stage']
+})
 }
 function getSchedule(area, stage) {
   let today = new Date().toISOString().slice(0, 10)
@@ -51,11 +57,41 @@ function getSchedule(area, stage) {
   if (stage == 0) {
     return "No load shedding"
   }
+  let stages = []
   let result = JSON.parse(response);
   for (let i = 0; i < result.schedule.days.length; i++) {
     if (result.schedule.days[i].date == today) {
-      console.log(result.schedule.days[i].stages[stage])
+      stages = result.schedule.days[i].stages[stage]
     }
+  }
+  
+  for (let i = 0; i < stages.length; i++) {
+    let start = stages[i].split("-")[0]
+    let end = stages[i].split("-")[1]
+    var currentD = new Date();
+    //currentD.setHours(21,15,0);
+    var startD = new Date();
+    startD.setHours(start.split(":")[0],start.split(":")[1],0);
+    var endD = new Date();
+    endD.setHours(end.split(":")[0],end.split(":")[1],0);
+    if (end.split(":")[0] == "00") {
+      endD.setDate(endD.getDate() + 1);
+    }
+    if (currentD < startD) {
+      let mins =  Math.round((startD - currentD) / 60000)
+      if (mins < 330) {
+        // console.log("Load shedding starts in " + Math.round((startD - currentD) / 60000) + " minutes")
+        // console.log("leds "+ Math.ceil(mins / 30))
+        return Math.ceil(mins / 30)
+      }
+      
+    }
+    // console.log("difference: " +((Math.abs(endD - startD) / (60 * 1000)) / 30))
+    // console.log('Current Date:' +currentD)
+    // console.log('Start: ' + startD + ' End: ' + endD)
+    // if (startD <= currentD && endD >= currentD) {
+       // console.log("Load shedding")
+    // }
   }
   // console.log(result['events'])
 	// console.log(result['status']['eskom']['stage'])
