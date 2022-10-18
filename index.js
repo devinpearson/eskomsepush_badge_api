@@ -8,7 +8,7 @@ app.get('/', (req, res) => {
 	//const stage = parseInt(getStage())
   const stage = 2
   const schedule = getSchedule(area, stage)
-  res.send('2,1,4')
+  res.send('4,1,6')
 })
 
 app.listen(port, () => {
