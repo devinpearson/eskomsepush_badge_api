@@ -23,7 +23,7 @@ app.get('/v2', (req, res) => {
   //   console.log(stage)
   // })
   
-  const stage = 4
+  const stage = 3
   if ((stage - 1) >= 0) {
     ledArray[stage -1] = 1
   }
